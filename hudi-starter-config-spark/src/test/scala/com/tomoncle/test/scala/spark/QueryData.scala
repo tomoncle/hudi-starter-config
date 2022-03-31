@@ -1,9 +1,29 @@
+/*
+ * Copyright 2018 tomoncle
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.tomoncle.test.scala.spark
 import com.tomoncle.test.scala.spark.SparkHudiUtils._
 import org.apache.spark.sql.{DataFrame, SaveMode, SparkSession}
 import org.junit.Test
 import org.slf4j.{Logger, LoggerFactory}
 
+/**
+  * 当Hudi中表的类型为：COW时，支持2种方式查询：Snapshot Queries、Incremental Queries；
+  * 默认情况下查询属于：Snapshot Queries快照查询，通过参数：hoodie.datasource.query.type 可以进行设置
+  */
 class QueryData {
 
   protected lazy val logger: Logger = LoggerFactory.getLogger(this.getClass)
@@ -32,7 +52,7 @@ class QueryData {
   }
 
   /**
-    * 采用Snapshot Query快照方式查询表的数据
+    * 快照方式查询（Snapshot Query）数据，采用DSL方式
     */
   def queryDataBySnapshot(spark: SparkSession, path: String): Unit = {
     import spark.implicits._
@@ -50,6 +70,12 @@ class QueryData {
       .show(20, truncate = false)
   }
 
+  /**
+    * 快照方式查询（Snapshot Query）数据，采用SQL方式
+    *
+    * @param spark SparkSession
+    * @param path  保存路径
+    */
   def queryDataBySnapshotSQL(spark: SparkSession, path: String): Unit ={
     val tripsSnapshotDF = spark.read.format("hudi").load(path)
     println(tripsSnapshotDF.show(10,truncate = false))
@@ -62,6 +88,13 @@ class QueryData {
     spark.sql("select driver, count(1), sum(fare) from hudi_trips_snapshot group by driver order by driver asc").show()
   }
 
+  /**
+    * 快照方式查询（Snapshot Query）数据，采用DSL方式
+    * 可以依据时间进行过滤查询，设置属性："as.of.instant"
+    *
+    * @param spark SparkSession
+    * @param path  保存路径
+    */
   def queryDataByTime(spark: SparkSession, path: String): Unit = {
     import org.apache.spark.sql.functions._
 

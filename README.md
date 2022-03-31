@@ -29,7 +29,7 @@ export PATH=$PATH:$SCALA_HOME/bin
 export HADOOP_HOME=/usr/local/hadoop-2.7.3
 export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/native
 export HADOOP_OPTS="-Djava.library.path=$HADOOP_HOME/lib/native"
-export PATH=$PATH:$HADOOP_HOME/bin
+export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
 ```
 
 ## 软件依赖

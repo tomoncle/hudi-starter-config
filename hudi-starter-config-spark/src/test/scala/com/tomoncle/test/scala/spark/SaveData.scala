@@ -1,3 +1,19 @@
+/*
+ * Copyright 2018 tomoncle
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.tomoncle.test.scala.spark
 
 import com.tomoncle.test.scala.spark.SparkHudiUtils._
@@ -62,19 +78,19 @@ class SaveData {
     // ((0,a0,30.0,10000,p0), (1,a1,30.2,10100,p1), (2,a2,30.4,10200,p2), (3,a3,30.6,10300,p3), (4,a4,30.8,10400,p4),
     // (5,a5,31.0,10500,p0), (6,a6,31.2,10600,p1), (7,a7,31.4,10700,p2), (8,a8,31.6,10800,p3), (9,a9,31.8,10900,p4))
     val df = (for (i <- 0 until 10) yield (i, s"a$i", 30 + i * 0.2, 100 * i + 10000, s"p${i % 5}"))
-      .toDF("uuid", "name", "price", "ts", "dt")
+      .toDF("uuid", "name", "price", "ts", "partitionpath")
     println("数据格式：")
     println(df.printSchema())
     println("数据：")
     println(df.show(10, truncate = false))
-    val table = "test"
+    val table = "test_cow"
     val path = getConfigValue("hudi.storage.local.dir") + "/00/" + table
     df.write.mode(SaveMode.Append).format("hudi")
       .option("hoodie.insert.shuffle.parallelism", "100")
       .option("hoodie.upsert.shuffle.parallelism", "100")
       .option(PRECOMBINE_FIELD.key(), "ts")
       .option(RECORDKEY_FIELD.key(), "uuid")
-      .option(PARTITIONPATH_FIELD.key(), "dt")
+      .option(PARTITIONPATH_FIELD.key(), "partitionpath")
       .option(TBL_NAME.key(), table)
       .save(path)
   }
@@ -87,7 +103,7 @@ class SaveData {
     val df = spark.read.json(dataset)
     //    println(df.printSchema())
     //    println(df.show(10, truncate = false))
-    val table = "on_time"
+    val table = "on_time_cow"
     val path = getConfigValue("hudi.storage.local.dir") + "/01/" + table
     df.write.mode(SaveMode.Append).format("hudi")
       .option("hoodie.insert.shuffle.parallelism", "100")

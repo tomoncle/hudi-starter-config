@@ -38,10 +38,7 @@ class IncrementalQueryData {
 
     // 第1步、加载Hudi表数据，获取commit time时间，作为增量查询数据阈值
     import org.apache.hudi.DataSourceReadOptions._
-    spark.read
-      .format("hudi")
-      .load(path)
-      .createOrReplaceTempView("view_temp_hudi_trips")
+    spark.read.format("hudi").load(path).createOrReplaceTempView("view_temp_hudi_trips")
     val commits: Array[String] = spark.sql(
       """
         				  |select
@@ -57,12 +54,9 @@ class IncrementalQueryData {
     println(s"beginTime = ${beginTime}")
 
     // 第2步、设置Hudi数据CommitTime时间阈值，进行增量数据查询
-    val tripsIncrementalDF = spark.read
-      .format("hudi")
-      // 设置查询数据模式为：incremental，增量读取
-      .option(QUERY_TYPE.key(), QUERY_TYPE_INCREMENTAL_OPT_VAL)
-      // 设置增量读取数据时开始时间
-      .option(BEGIN_INSTANTTIME.key(), beginTime)
+    val tripsIncrementalDF = spark.read.format("hudi")
+      .option(QUERY_TYPE.key(), QUERY_TYPE_INCREMENTAL_OPT_VAL) // 设置查询数据模式为：incremental，增量读取
+      .option(BEGIN_INSTANTTIME.key(), beginTime) // 设置增量读取数据时开始时间
       .load(path)
 
     // 第3步、将增量查询数据注册为临时视图，查询费用大于20数据

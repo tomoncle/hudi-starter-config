@@ -23,7 +23,8 @@ import java.util.UUID.randomUUID
 import com.alibaba.fastjson.JSON.parseArray
 import com.alibaba.fastjson.{JSONArray, JSONObject}
 import com.typesafe.config.ConfigFactory
-import org.apache.spark.sql.{Dataset, SparkSession}
+import org.apache.spark.sql.{DataFrame, Dataset, SparkSession}
+import org.apache.spark.storage.StorageLevel
 
 import scala.io.Source
 
@@ -37,6 +38,7 @@ object SparkHudiUtils {
 
   /**
     * 配置spark上下文，支持 S3对象存储
+    * 文档： https://hadoop.apache.org/docs/current/hadoop-aws/tools/hadoop-aws/index.html#General_S3A_Client_configuration
     *
     * @param spark SparkSession
     */
@@ -48,6 +50,8 @@ object SparkHudiUtils {
     spark.sparkContext.hadoopConfiguration.set("fs.s3a.connection.ssl.enabled", conf.getString("hudi.storage.s3.enableSSL"))
     spark.sparkContext.hadoopConfiguration.set("spark.hadoop.fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem")
     spark.sparkContext.hadoopConfiguration.set("fs.s3a.signing-algorithm", "S3SignerType")
+    // 对S3兼容存储的所有请求使用路径式访问。此属性针对不支持虚拟主机式访问的S3兼容存储。（默认为false）
+    // spark.sparkContext.hadoopConfiguration.set("fs.s3a.path.style.access", "false")
   }
 
   def setDefaultEnv(): Unit = {
@@ -107,6 +111,26 @@ object SparkHudiUtils {
   }
 
   /**
+    * 缓存 DataFrame
+    *
+    * @param df DataFrame
+    */
+  def cacheDataFrame(df: DataFrame): Unit = {
+    // 如果数据被使用多次，建议缓存
+    df.persist(StorageLevel.MEMORY_AND_DISK)
+  }
+
+  /**
+    * 释放缓存 DataFrame
+    *
+    * @param df DataFrame
+    */
+  def clearDataFrame(df: DataFrame): Unit = {
+    // 当数据不在使用时，释放缓存
+    df.unpersist()
+  }
+
+  /**
     * 读取文件内容
     *
     * @param filePath 文件路径
@@ -160,12 +184,22 @@ object SparkHudiUtils {
     val partition = new SimpleDateFormat("yyyy-MM-dd").format(new Date)
     for (i <- 0 until array.size()) {
       val obj: JSONObject = array.getJSONObject(i)
-      // 主键
+      // 给数据添加 主键，时间，分区等字段
       obj.putIfAbsent("uuid", randomUUID().toString.replaceAll("-", ""))
       obj.putIfAbsent("ts", System.currentTimeMillis().toString)
       obj.putIfAbsent("partitionPath", partition)
       strList = strList :+ obj.toString
     }
     strList.toDS()
+  }
+
+  /**
+    * 读取CSV格式文本文件数据，封装到DataFrame中
+    */
+  def readCsvFileToDataFrame(spark: SparkSession, path: String): DataFrame = {
+    spark.read.option("sep", "\\t") // 设置分隔符为制表符
+      .option("header", "true") // 文件首行为列名称
+      .option("inferSchema", "true") // 依据数值自动推断数据类型
+      .csv(path) // 指定文件路径
   }
 }

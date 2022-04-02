@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.tomoncle.test.scala.spark
+package com.tomoncle.test.scala.spark.demo
 
 import com.tomoncle.test.scala.spark.SparkHudiUtils.getS3SparkInstance
 import org.apache.spark.sql.{DataFrame, SaveMode, SparkSession}

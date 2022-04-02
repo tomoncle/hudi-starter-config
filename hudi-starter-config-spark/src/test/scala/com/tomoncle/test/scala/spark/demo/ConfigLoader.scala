@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package com.tomoncle.test.scala.spark
+package com.tomoncle.test.scala.spark.demo
 
 import com.alibaba.fastjson.JSON._
 import com.alibaba.fastjson.{JSONArray, JSONObject}
+import com.tomoncle.test.scala.spark.SparkHudiUtils
 import com.typesafe.config.ConfigFactory
 import org.junit.Test
 

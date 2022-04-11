@@ -14,18 +14,21 @@
  * limitations under the License.
  */
 
-package com.tomoncle.test.scala.spark.demo
+package com.tomoncle.test.scala.spark
+
+import java.net.URI
 
 import com.alibaba.fastjson.JSON._
 import com.alibaba.fastjson.{JSONArray, JSONObject}
-import com.tomoncle.test.scala.spark.SparkHudiUtils
 import com.typesafe.config.ConfigFactory
+import org.apache.hadoop.conf.Configuration
+import org.apache.hadoop.fs.s3a.S3AFileSystem
 import org.junit.Test
 
 import scala.io.Source
 
 
-class ConfigLoader {
+class Tester {
   @Test
   def checkConfig(): Unit = {
     val conf = ConfigFactory.load()
@@ -47,7 +50,7 @@ class ConfigLoader {
   }
 
   @Test
-  def jsonParser(): Unit ={
+  def jsonParser(): Unit = {
     val conf = ConfigFactory.load()
     val filePath = conf.getString("test.json.path")
     //以指定的UTF-8字符集读取文件，第一个参数可以是字符串或者是java.io.File
@@ -65,9 +68,23 @@ class ConfigLoader {
   }
 
   @Test
-  def readFile2(): Unit ={
+  def readFile2(): Unit = {
     println(SparkHudiUtils.readFileContentOnResource("/json/ontime.json"))
   }
 
+
+  @Test
+  def validatorS3AAuth(): Unit = {
+    val property = ConfigFactory.load()
+    val s3a: S3AFileSystem = new S3AFileSystem()
+    val uri: URI = new URI("s3a://test-apache-hudi")
+    val config: Configuration = new Configuration()
+    config.set("fs.s3a.access.key", property.getString("hudi.storage.s3.accessKey"))
+    config.set("fs.s3a.secret.key", property.getString("hudi.storage.s3.secretKey"))
+    config.set("fs.s3a.endpoint", property.getString("hudi.storage.s3.endpoint"))
+    config.set("fs.s3a.connection.ssl.enabled", property.getString("hudi.storage.s3.enableSSL"))
+    config.set("fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem")
+    s3a.initialize(uri, config)
+  }
 
 }

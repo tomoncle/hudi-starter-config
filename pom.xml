@@ -25,6 +25,7 @@
 
     <modules>
         <module>hudi-starter-config-spark</module>
+        <module>hudi-starter-config-flink</module>
     </modules>
 
     <properties>
@@ -34,8 +35,6 @@
         <file_encoding>UTF-8</file_encoding>
         <scala.version>2.12.10</scala.version>
         <scala.binary.version>2.12</scala.binary.version>
-        <spark.version>2.4.8</spark.version>
-        <hadoop.version>2.7.3</hadoop.version>
         <hudi.version>0.10.1</hudi.version>
     </properties>
 
@@ -57,6 +56,17 @@
             <url>http://repository.jboss.com/nexus/content/groups/public</url>
         </repository>
     </repositories>
+
+    <!--公共依赖-->
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.20</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 
     <build>
         <outputDirectory>target/classes</outputDirectory>

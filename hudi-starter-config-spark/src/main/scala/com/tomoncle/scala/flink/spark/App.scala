@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.tomoncle.scala.spark
+package com.tomoncle.scala.flink.spark
 
 object App {
   def main(args: Array[String]): Unit = {

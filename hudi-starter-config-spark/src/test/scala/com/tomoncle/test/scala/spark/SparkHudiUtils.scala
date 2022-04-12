@@ -30,7 +30,7 @@ import scala.io.Source
 
 object SparkHudiUtils {
 
-  private lazy val MINE_HADOOP_HOME: String = "D:\\software\\installs\\hadoop-2.7.3"
+  private lazy val MINE_HADOOP_HOME: String = "D:\\software\\installs\\apache-hadoop-2.7.3"
 
   def sayHello(): String = {
     "hello world!"

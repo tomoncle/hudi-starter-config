@@ -29,7 +29,7 @@ class AppTest {
   def validatorS3AAuth(): Unit = {
     val property = ConfigFactory.load()
     val s3a: S3AFileSystem = new S3AFileSystem()
-    val uri: URI = new URI("s3a://test-apache-hudi")
+    val uri: URI = new URI("s3a://test-hadoop-bucket")
     val config: Configuration = new Configuration()
     config.set("fs.s3a.access.key", property.getString("hudi.storage.s3.accessKey"))
     config.set("fs.s3a.secret.key", property.getString("hudi.storage.s3.secretKey"))

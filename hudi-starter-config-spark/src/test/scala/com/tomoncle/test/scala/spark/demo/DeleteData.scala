@@ -16,7 +16,7 @@
 
 package com.tomoncle.test.scala.spark.demo
 
-import com.tomoncle.test.scala.spark.SparkHudiUtils.getS3SparkInstance
+import com.tomoncle.test.scala.spark.SparkHudiUtils.{getHudiDefaultFs, getS3SparkInstance}
 import org.apache.spark.sql.{DataFrame, SaveMode, SparkSession}
 import org.junit.Test
 import org.slf4j.{Logger, LoggerFactory}
@@ -37,7 +37,7 @@ df.write.format("hudi")
 class DeleteData {
   protected lazy val logger: Logger = LoggerFactory.getLogger(this.getClass)
   private lazy val TABLE_NAME: String = "hudi_trips_query_cow"
-  private lazy val BASE_PATH: String = "s3a://test-apache-hudi/" + TABLE_NAME
+  private lazy val BASE_PATH: String = getHudiDefaultFs + "/" + TABLE_NAME
 
   /**
     * 删除Hudi表数据，依据主键UUID进行删除，如果是分区表，指定分区路径

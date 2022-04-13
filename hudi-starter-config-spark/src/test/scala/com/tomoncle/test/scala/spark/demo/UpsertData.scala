@@ -25,7 +25,7 @@ import org.slf4j.{Logger, LoggerFactory}
 class UpsertData {
   protected lazy val logger: Logger = LoggerFactory.getLogger(this.getClass)
   private lazy val TABLE_NAME: String = "hudi_trips_upsert_cow"
-  private lazy val BASE_PATH: String = "s3a://test-apache-hudi/" + TABLE_NAME
+  private lazy val BASE_PATH: String = getHudiDefaultFs + "/" + TABLE_NAME
 
   def query(spark: SparkSession, path: String): Unit = {
     val tripsSnapshotDF = spark.read.format("hudi").load(path)

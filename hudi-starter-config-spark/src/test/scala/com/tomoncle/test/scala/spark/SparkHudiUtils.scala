@@ -37,6 +37,16 @@ object SparkHudiUtils {
   }
 
   /**
+    * 获取默认的存储系统
+    *
+    * @return
+    */
+  def getHudiDefaultFs: String = {
+    val conf = ConfigFactory.load()
+    conf.getString("hudi.storage.s3.defaultFS")
+  }
+
+  /**
     * 配置spark上下文，支持 S3对象存储
     * 文档： https://hadoop.apache.org/docs/current/hadoop-aws/tools/hadoop-aws/index.html#General_S3A_Client_configuration
     *
@@ -50,6 +60,7 @@ object SparkHudiUtils {
     spark.sparkContext.hadoopConfiguration.set("fs.s3a.connection.ssl.enabled", conf.getString("hudi.storage.s3.enableSSL"))
     spark.sparkContext.hadoopConfiguration.set("spark.hadoop.fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem")
     spark.sparkContext.hadoopConfiguration.set("fs.s3a.signing-algorithm", "S3SignerType")
+    // spark.sparkContext.hadoopConfiguration.set("fs.s3a.server-side-encryption-algorithm", "S3SignerType")
     // 对S3兼容存储的所有请求使用路径式访问。此属性针对不支持虚拟主机式访问的S3兼容存储。（默认为false）
     // spark.sparkContext.hadoopConfiguration.set("fs.s3a.path.style.access", "false")
   }

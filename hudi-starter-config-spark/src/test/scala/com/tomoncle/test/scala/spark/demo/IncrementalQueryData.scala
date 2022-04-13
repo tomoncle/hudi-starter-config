@@ -16,7 +16,7 @@
 
 package com.tomoncle.test.scala.spark.demo
 
-import com.tomoncle.test.scala.spark.SparkHudiUtils.getS3SparkInstance
+import com.tomoncle.test.scala.spark.SparkHudiUtils.{getHudiDefaultFs, getS3SparkInstance}
 import org.apache.spark.sql.SparkSession
 import org.junit.Test
 
@@ -30,7 +30,8 @@ class IncrementalQueryData {
   @Test
   def app(): Unit = {
     val spark = getS3SparkInstance
-    incrementalQueryData(spark, "s3a://test-apache-hudi/hudi_trips_query_cow")
+    val path = getHudiDefaultFs + "/" + "hudi_trips_query_cow"
+    incrementalQueryData(spark, path)
   }
 
   def incrementalQueryData(spark: SparkSession, path: String): Unit = {

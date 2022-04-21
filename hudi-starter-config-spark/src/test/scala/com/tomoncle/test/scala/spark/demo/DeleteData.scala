@@ -37,7 +37,7 @@ df.write.format("hudi")
 class DeleteData {
   protected lazy val logger: Logger = LoggerFactory.getLogger(this.getClass)
   private lazy val TABLE_NAME: String = "hudi_trips_query_cow"
-  private lazy val BASE_PATH: String = getHudiDefaultFs + "/" + TABLE_NAME
+  private lazy val BASE_PATH: String = getHudiDefaultFs + "/db1/" + TABLE_NAME
 
   /**
     * 删除Hudi表数据，依据主键UUID进行删除，如果是分区表，指定分区路径

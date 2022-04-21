@@ -23,6 +23,7 @@ import com.alibaba.fastjson.{JSONArray, JSONObject}
 import com.typesafe.config.ConfigFactory
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.s3a.S3AFileSystem
+import org.apache.spark.sql.DataFrame
 import org.junit.Test
 
 import scala.io.Source
@@ -86,6 +87,16 @@ class Tester {
     config.set("fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem")
     config.set("fs.s3a.server-side-encryption-algorithm", "S3SignerType")
     s3a.initialize(uri, config)
+  }
+
+  @Test
+  def queryHudiDemo01(): Unit = {
+    val spark = SparkHudiUtils.getS3SparkInstance
+
+    val queryDF: DataFrame = spark.read.format("hudi")
+      .load("s3a://test-spark-bucket/db1/hudi_trips_query_cow")
+    queryDF.printSchema()
+    queryDF.show(10, truncate = false)
   }
 
 }

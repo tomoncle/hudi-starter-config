@@ -29,7 +29,7 @@ class QueryData {
 
   protected lazy val logger: Logger = LoggerFactory.getLogger(this.getClass)
   private lazy val TABLE_NAME: String = "hudi_trips_query_cow"
-  private lazy val BASE_PATH: String = getHudiDefaultFs + "/" + TABLE_NAME
+  private lazy val BASE_PATH: String = getHudiDefaultFs + "/db1/" + TABLE_NAME
 
   def initData(spark: SparkSession, tableName: String, basePath: String): Unit = {
     import org.apache.hudi.DataSourceWriteOptions._

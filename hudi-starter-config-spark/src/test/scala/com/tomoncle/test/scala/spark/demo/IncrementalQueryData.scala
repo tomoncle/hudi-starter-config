@@ -30,7 +30,7 @@ class IncrementalQueryData {
   @Test
   def app(): Unit = {
     val spark = getS3SparkInstance
-    val path = getHudiDefaultFs + "/" + "hudi_trips_query_cow"
+    val path = getHudiDefaultFs + "/db1/" + "hudi_trips_query_cow"
     incrementalQueryData(spark, path)
   }
 
@@ -52,7 +52,7 @@ class IncrementalQueryData {
       .map(row => row.getString(0))
       .take(50)
     val beginTime = commits(commits.length - 1) // commit time we are interested in
-    println(s"beginTime = ${beginTime}")
+    println(s"beginTime = $beginTime")
 
     // 第2步、设置Hudi数据CommitTime时间阈值，进行增量数据查询
     val tripsIncrementalDF = spark.read.format("hudi")

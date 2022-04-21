@@ -189,8 +189,8 @@ object SparkHudiUtils {
   def loadJsonFileToDataset(filePath: String, spark: SparkSession): Dataset[String] = {
     import spark.implicits._
 
-    var strList = List.empty[String]
-    val content = readFileContent(filePath)
+    var strList: List[String] = List.empty[String]
+    val content: String = readFileContent(filePath)
     val array: JSONArray = parseArray(content)
     val partition = new SimpleDateFormat("yyyy-MM-dd").format(new Date)
     for (i <- 0 until array.size()) {

@@ -38,7 +38,7 @@ import org.slf4j.{Logger, LoggerFactory}
 class SaveData {
   protected lazy val logger: Logger = LoggerFactory.getLogger(this.getClass)
   private lazy val TABLE_NAME: String = "hudi_trips_save_cow"
-  private lazy val BASE_PATH: String = getHudiDefaultFs + "/" + TABLE_NAME
+  private lazy val BASE_PATH: String = getHudiDefaultFs + "/db1/" + TABLE_NAME
 
   @Test
   def helloWorld(): Unit = {

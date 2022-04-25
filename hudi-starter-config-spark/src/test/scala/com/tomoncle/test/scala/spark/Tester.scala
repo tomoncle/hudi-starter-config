@@ -23,7 +23,7 @@ import com.alibaba.fastjson.{JSONArray, JSONObject}
 import com.typesafe.config.ConfigFactory
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.s3a.S3AFileSystem
-import org.apache.spark.sql.DataFrame
+import org.apache.hudi.common.model.HoodieTableType
 import org.junit.Test
 
 import scala.io.Source
@@ -90,13 +90,9 @@ class Tester {
   }
 
   @Test
-  def queryHudiDemo01(): Unit = {
-    val spark = SparkHudiUtils.getS3SparkInstance
-
-    val queryDF: DataFrame = spark.read.format("hudi")
-      .load("s3a://test-spark-bucket/db1/hudi_trips_query_cow")
-    queryDF.printSchema()
-    queryDF.show(10, truncate = false)
+  def tableType(): Unit = {
+    println(HoodieTableType.MERGE_ON_READ.name())
+    println(HoodieTableType.COPY_ON_WRITE.name())
   }
 
 }
